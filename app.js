@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require("cookie-parser");
+const cors = require('cors');
 
 global.app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,27 +11,25 @@ const PORT = process.env.PORT || 3000;
 global.app.use( bodyParser.json() );
 global.app.use( bodyParser.urlencoded( { extended: true } ) );
 
-// Config for conecction to api of another port
-global.app.all('*',function(req, res, next){
-
-  var whitelist = req.headers.origin;
-
-  res.header('Access-Control-Allow-Origin', whitelist);
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD');
-  res.header('Access-Control-Allow-Headers', "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-  res.header("Access-Control-Allow-Credentials", "true");
-  //res.header('Set-Cookie: cross-site-cookie=name; SameSite=None; Secure');
-
-  next();
-
-});
+// Cors config
+global.app.use( cors({ origin: true, credentials: true  }) );
 
 // DB connection
 const { db } = require('./config/db');
 db.connect();
 
+// Session
+const { session } = require('./config/session')
+global.app.use(cookieParser());
+global.app.use(session);
+
 // Routes
 require('./app/routes/tracks');
+require('./app/routes/users');
+require('./app/routes/usersTracks');
+
+// Static assets
+global.app.use( express.static(`${__dirname}/public`) );
 
 // Listen
 global.app.listen(PORT, () => {

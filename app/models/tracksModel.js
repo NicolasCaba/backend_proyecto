@@ -7,6 +7,7 @@ const { Schema } = mongoose;
 const tracksSchema = new Schema({
   name: String,
   album: String,
+  genre: String,
   coverImg: String,
   artist: {
     name: String,
@@ -28,6 +29,7 @@ tracksModel.create = function create(post, callback) {
   const instance = new MyModel();
   instance.name = post.name;
   instance.album = post.album;
+  instance.genre = post.genre;
   instance.coverImg = post.coverImg;
   instance.artist.name = post.artist.name;
   instance.artist.nickname = post.artist.nickname;
@@ -78,6 +80,7 @@ tracksModel.update = function update(post, callback) {
     {
       name: post.name,
       album: post.album,
+      genre: post.genre,
       coverImg: post.coverImg,
       artist: {
         name: post.artist.name,

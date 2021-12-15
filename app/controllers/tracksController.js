@@ -8,6 +8,7 @@ tracksController.create = function create(request, response) {
   const post = {
     name: request.body.name,
     album: request.body.album,
+    genre: request.body.genre,
     coverImg: request.body.coverImg,
     artist: {
       name: request.body.artist.name,
@@ -27,6 +28,10 @@ tracksController.create = function create(request, response) {
   }
   if( post.album === null || post.album === undefined || post.album === '' ) {
     response.json({ state: false, message: 'El album es obligatorio' });
+    return false;
+  }
+  if( post.genre === null || post.genre === undefined || post.genre === '' ) {
+    response.json({ state: false, message: 'El genero de la cancion es obligatorio' });
     return false;
   }
   if( post.coverImg === null || post.coverImg === undefined || post.coverImg === '' ) {
@@ -88,6 +93,7 @@ tracksController.update = function update(request, response) {
     id: request.body.id,
     name: request.body.name,
     album: request.body.album,
+    genre: request.body.genre,
     coverImg: request.body.coverImg,
     artist: {
       name: request.body.artist.name,
@@ -112,6 +118,10 @@ tracksController.update = function update(request, response) {
   }
   if( post.album === null || post.album === undefined || post.album === '' ) {
     response.json({ state: false, message: 'El album es obligatorio' });
+    return false;
+  }
+  if( post.genre === null || post.genre === undefined || post.genre === '' ) {
+    response.json({ state: false, message: 'El genero de la cancion es obligatorio' });
     return false;
   }
   if( post.coverImg === null || post.coverImg === undefined || post.coverImg === '' ) {
