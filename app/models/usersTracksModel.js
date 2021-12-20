@@ -16,6 +16,17 @@ const usersTracksSchema = new Schema({
 const MyModel = mongoose.model('usersTracks', usersTracksSchema);
 
 // Methods
+usersTracksModel.get = function get(post, callback) {
+  MyModel.find({_id: post.id}, {__v: 0, _id: 1}, (error, response) => {
+    if(error) {
+      return callback({ state: false, message: 'Ocurrio un error', info: error });
+    }
+
+    return callback({ state: true, message: response });
+  });
+}
+
+
 usersTracksModel.create = function create(post, callback) {
   const instance = new MyModel();
   instance.artistId = post.artistId;
@@ -55,6 +66,50 @@ usersTracksModel.getUserTracks = function getUserTracks(post, callback) {
 
     return callback({ state: true, message: response });
   });
+}
+
+usersTracksModel.updateUserTracks = function updateUserTracks(post, callback) {
+  MyModel.findOneAndUpdate(
+    { _id: post.trackId },
+    {
+      artistId: post.artistId,
+      artistNickname: post.artistNickname,
+      name: post.name,
+      album: post.album,
+      genre: post.genre,
+      coverImg: post.coverImg,
+      trackUrl: post.trackUrl
+    },
+    {
+      rawResult: true
+    },
+    (error, res) => {
+      if(error) {
+        return callback({ state: false, message: 'Id no encontrado' })
+      }
+      if(res.lastErrorObject.updatedExisting === false) {
+        return callback({ state: false, message: 'Id no encontrado' });
+      }
+      return callback({ state: true, message: 'Cancion modificada' });
+    }
+  );
+}
+
+
+usersTracksModel.deleteUserTracks = function deleteUserTracks(post, callback) {
+  MyModel.findOneAndDelete(
+    { _id: post.id },
+    { rawResult: true },
+    (error, res) => {
+      if(error) {
+        return callback({ state: false, message: "Id no encontrado" });
+      }
+      if(res.lastErrorObject.n === 0) {
+        return callback({ state: false, message: 'Id de cancion no encontrado' });
+      }
+      return callback({ state: true, message: 'Cancion eliminada correctamente',  });
+    }
+  );
 }
 
 module.exports.usersTracksModel = usersTracksModel;
